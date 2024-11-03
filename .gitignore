@@ -236,7 +236,7 @@ Library
 ProjectSettings
 Temp
 ContentEVE/GameData/EnvironmentalVisualEnhancements/eveshaders.bundle
-/.vs/
+.vs/
 .Backups
 /Source Textures/Atmosphere/Textures/.autosave/
 /Assets/Bumps/NotAStockNasaCloudMap_*.png
