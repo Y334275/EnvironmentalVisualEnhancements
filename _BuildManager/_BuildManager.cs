@@ -40,7 +40,7 @@ namespace _BuildManager
         {
             Assembly buildManager = Assembly.GetExecutingAssembly();
             String location = Path.GetDirectoryName(buildManager.Location);
-            List<AssemblyName> assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => Path.GetDirectoryName(x.Location) == location).Select(x => x.GetName()).ToList();
+            List<AssemblyName> assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.IsDynamic && Path.GetDirectoryName(x.Location) == location).Select(x => x.GetName()).ToList();
 
             String versionInfo = "[EVE] Version Info:\n";
             foreach (AssemblyName assembly in assemblies)

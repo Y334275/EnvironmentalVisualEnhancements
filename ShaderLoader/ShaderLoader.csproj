@@ -128,6 +128,11 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\KSPResources\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\software\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="UnityEngine.UnityWebRequestWWWModule">
       <HintPath>..\KSPResources\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
     </Reference>

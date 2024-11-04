@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 using Utils;
 using KSPAssets.Loaders;
+using UnityEngine.Networking;
 
 namespace ShaderLoader
 {
@@ -18,37 +19,44 @@ namespace ShaderLoader
 
         private void Start()
         {
-            LoadShaders();
+            StartCoroutine(LoadShaders());
         }
 
-        private void LoadShaders()
+        private IEnumerator LoadShaders()
         {
-            if (shaderDictionary == null) {
+            if (shaderDictionary == null)
+            {
                 shaderDictionary = new Dictionary<string, Shader>();
 
                 // Add all other shaders
                 Shader[] shaders = Resources.FindObjectsOfTypeAll<Shader>();
-                foreach (Shader shader in shaders) {
+                foreach (Shader shader in shaders)
+                {
                     shaderDictionary[shader.name] = shader;
                 }
 
-                using (WWW www = new WWW("file://" + KSPUtil.ApplicationRootPath + "GameData/EnvironmentalVisualEnhancements/eveshaders.bundle")) {
-                    if (www.error != null) {
+                using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle("file://" + KSPUtil.ApplicationRootPath + "GameData/EnvironmentalVisualEnhancements/eveshaders.bundle"))
+                {
+                    yield return uwr.SendWebRequest();
+                    if (uwr.isNetworkError || uwr.isHttpError)
+                    {
                         KSPLog.print("[EVE] eveshaders.bundle not found!");
-                        return;
                     }
+                    else
+                    {
+                        AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(uwr);
 
-                    AssetBundle bundle = www.assetBundle;
+                        shaders = bundle.LoadAllAssets<Shader>();
 
-                    shaders = bundle.LoadAllAssets<Shader>();
+                        foreach (Shader shader in shaders)
+                        {
+                            KSPLog.print("[EVE] Shader " + shader.name + " loaded");
+                            shaderDictionary.Add(shader.name, shader);
+                        }
 
-                    foreach (Shader shader in shaders) {
-                        KSPLog.print("[EVE] Shader " + shader.name + " loaded");
-                        shaderDictionary.Add(shader.name, shader);
+                        bundle.Unload(false);
+                        uwr.Dispose();
                     }
-
-                    bundle.Unload(false);
-                    www.Dispose();
                 }
 
                 loaded = true;
@@ -57,7 +65,8 @@ namespace ShaderLoader
 
         public static Shader FindShader(string name)
         {
-            if (shaderDictionary == null) {
+            if (shaderDictionary == null)
+            {
                 KSPLog.print("[EVE] Trying to find shader before assets loaded");
                 return null;
             }
