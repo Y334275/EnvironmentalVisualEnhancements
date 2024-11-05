@@ -258,10 +258,9 @@ namespace Utils
         public void SaveTextures(Material material)
         {
             Cache();
-            List<String> keys = cache.Keys.Select(x=>(string)x).ToList();
-            foreach (String key in keys)
+            foreach (var key in cache.Keys)
             {
-                String name = key;
+                String name = key.ToString();
                 object obj = cache[key];
                
                 if ( obj == null )
@@ -269,7 +268,7 @@ namespace Utils
                     Texture2D value = (Texture2D)material.GetTexture(name);
                     if( value != null )
                     {
-                        cache[key] = value;
+                        cache.Add(key, value);
                     }
                     
                 }

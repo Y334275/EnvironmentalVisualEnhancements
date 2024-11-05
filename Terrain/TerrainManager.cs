@@ -21,6 +21,7 @@ namespace Terrain
         private static Shader planetShader = null;
         private static Shader terrainShader = null;
         private static Shader oceanBackingShader = null;
+        private static Shader waterShader = null;
 
         public static Shader OceanShader
         {
@@ -63,7 +64,41 @@ namespace Terrain
                 } return oceanBackingShader;
             }
         }
-        
+        public static Shader WaterShader
+        {
+            get
+            {
+                if (waterShader == null)
+                {
+                    waterShader = ShaderLoaderClass.FindShader("EVE/Water");
+                }
+                return waterShader;
+            }
+        }
 
+        protected override void ApplyConfigNode(ConfigNode node)
+        {
+            GameObject go = new GameObject("TerrainManager");
+            TerrainObject newObject = go.AddComponent<TerrainObject>();
+            go.transform.parent = Tools.GetCelestialBody(node.GetValue(ConfigHelper.BODY_FIELD)).bodyTransform;
+            newObject.LoadConfigNode(node);
+            ObjectList.Add(newObject);
+            newObject.Apply();
+        }
+
+        protected override void Clean()
+        {
+            TerrainManager.Log("Cleaning Atmosphere!");
+            foreach (TerrainObject obj in ObjectList)
+            {
+                obj.Remove();
+                GameObject go = obj.gameObject;
+                go.transform.parent = null;
+
+                GameObject.DestroyImmediate(obj);
+                GameObject.DestroyImmediate(go);
+            }
+            ObjectList.Clear();
+        }
     }
 }
